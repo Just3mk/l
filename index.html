@@ -128,17 +128,27 @@ function nextQuestion() {
             const jumpscare = document.createElement('div');
             jumpscare.className = 'jumpscare';
             const img = document.createElement('img');
-            img.src = 'https://i.pinimg.com/736x/89/3c/bc/893cbc25aaa02410eb3880fe925af2b0.jpg'; 
+            img.src = 'https://i.pinimg.com/736x/89/3c/bc/893cbc25aaa02410eb3880fe925af2b0.jpg';
             jumpscare.appendChild(img);
             document.body.appendChild(jumpscare);
 
             setTimeout(() => {
                 jumpscare.remove();
                 document.body.className = 'bloody';
-                const city = "Bonn";
-                const country = "Germany";
                 document.getElementById('app').innerHTML = `<h2>Try again if you dare, ${answers[0]}...</h2>
-                    <div class="ipinfo">IP: ${randomIP()} | Country: ${country} | City: ${city}</div>`;
+                    <div class="ipinfo" id="ipinfo">Loading info...</div>`;
+
+                fetch('https://ipapi.co/json/')
+                  .then(res => res.json())
+                  .then(data => {
+                      const city = data.city || "Unknown";
+                      const country = data.country_name || "Unknown";
+                      document.getElementById('ipinfo').innerText = `IP: ${randomIP()} | Country: ${country} | City: ${city}`;
+                  })
+                  .catch(err => {
+                      document.getElementById('ipinfo').innerText = `IP: ${randomIP()} | Country: Unknown | City: Unknown`;
+                  });
+
             }, 900);
         }
     }
