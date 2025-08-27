@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>itZ Minigame كار</title>
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: #fff;
+    overflow: hidden;
+    transition: all 0.5s ease;
+}
+.container {
+    background: rgba(0,0,0,0.6);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    width: 350px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+button {
+    background: #ff6f61;
+    border: none;
+    padding: 12px 25px;
+    margin-top: 15px;
+    font-size: 16px;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+button:hover {
+    background: #ff3b2f;
+}
+input {
+    padding: 10px;
+    width: 80%;
+    border-radius: 10px;
+    border: none;
+    margin-top: 15px;
+}
+.jumpscare {
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+.jumpscare img {
+    width: 60%;
+    height: auto;
+    object-fit: contain;
+}
+.bloody {
+    background: #000;
+    color: #ff0000;
+    font-family: 'Creepster', cursive;
+    text-shadow: 2px 2px 5px black;
+}
+.ipinfo {
+    color: #ff0000;
+    margin-top: 15px;
+    font-weight: bold;
+}
+.win {
+    background: #ffeb3b;
+    color: #000;
+    font-family: 'Comic Sans MS', cursive;
+    text-shadow: 2px 2px 5px #f57c00;
+    animation: bounce 1s ease infinite alternate;
+}
+@keyframes bounce {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-20px); }
+}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="container" id="app">
+    <div id="question">Whats your name?</div>
+    <input type="text" id="answer" placeholder="Type here">
+    <br>
+    <button onclick="nextQuestion()">Submit</button>
+</div>
+
+<script>
+let step = 0;
+let answers = [];
+const questions = [
+    "Whats your name?",
+    "Do you respect الكارات?"
+];
+const winWords = ["yes", "ofc", "yeah", "ye", "اي", "يب"];
+
+function randomIP() {
+    return `${Math.floor(Math.random()*256)}.${Math.floor(Math.random()*256)}.${Math.floor(Math.random()*256)}.${Math.floor(Math.random()*256)}`;
+}
+
+function nextQuestion() {
+    const input = document.getElementById('answer');
+    const value = input.value.trim();
+    if (value === '') return;
+    answers.push(value);
+
+    step++;
+    if (step < questions.length) {
+        document.getElementById('question').innerText = questions[step];
+        input.value = '';
+    } else {
+        const answerLower = answers[1].toLowerCase();
+        if (winWords.includes(answerLower)) {
+            document.body.className = 'win';
+            document.getElementById('app').innerHTML = `<h2>🎉 You Win! 🎉</h2><p>Thanks for playing, ${answers[0]}!</p>`;
+        } else {
+            const jumpscare = document.createElement('div');
+            jumpscare.className = 'jumpscare';
+            const img = document.createElement('img');
+            img.src = 'https://i.pinimg.com/736x/89/3c/bc/893cbc25aaa02410eb3880fe925af2b0.jpg'; 
+            jumpscare.appendChild(img);
+            document.body.appendChild(jumpscare);
+
+            setTimeout(() => {
+                jumpscare.remove();
+                document.body.className = 'bloody';
+                const city = "Bonn";
+                const country = "Germany";
+                document.getElementById('app').innerHTML = `<h2>Try again if you dare, ${answers[0]}...</h2>
+                    <div class="ipinfo">IP: ${randomIP()} | Country: ${country} | City: ${city}</div>`;
+            }, 900);
+        }
+    }
+}
+</script>
+
+</body>
+</html>
